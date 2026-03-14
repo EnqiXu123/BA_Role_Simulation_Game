@@ -365,6 +365,10 @@ window.GAME_CONFIG = {
         name: "Omar",
         role: "Solution Designer",
         title: "Architecture and Platform Lead",
+        illustration: {
+          src: "assets/omar-cartoon.svg",
+          alt: "Cartoon illustration of Omar, Architecture and Platform Lead, with a shaved head, glasses, a gold jacket, and a platform diagram card",
+        },
       },
       subtitle: "Feasibility, dependencies, and constraints",
       dialogue: [

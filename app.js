@@ -194,29 +194,40 @@
       key: endingKey,
       strongestMetric,
       weakestMetric,
-      takeaway: buildTakeaway(endingKey, strongestMetric, weakestMetric, scores.riskExposure),
-      improvement: buildImprovementNote(weakestMetric),
+      takeaway: buildTakeaway(endingKey, strongestMetric, weakestMetric, scores),
+      improvementHeading: buildImprovementHeading(endingKey),
+      improvement: buildImprovementNote(endingKey, weakestMetric, scores),
     };
   }
 
-  function buildTakeaway(endingKey, strongestMetric, weakestMetric, riskExposure) {
+  function buildTakeaway(endingKey, strongestMetric, weakestMetric, scores) {
     const strongLabel = config.scoreMeta[strongestMetric].label;
     const weakLabel = config.scoreMeta[weakestMetric].label;
+    const riskExposure = scores.riskExposure;
 
     if (endingKey === "strongOutcome") {
       return (
         "Best signal: " +
         strongLabel +
-        ". You kept the team focused on the problem, then translated it into a release shape that delivery could actually support."
+        ". You kept the team focused on the problem, then translated it into a release shape that delivery could actually support. Your next step is refinement, not recovery."
       );
     }
 
     if (endingKey === "poorOutcome") {
-      return (
+      let takeaway =
         "Biggest recovery area: " +
         weakLabel +
-        ". The next step is to slow the conversation down, surface what is unclear, and stop treating pressure as clarity."
-      );
+        ". This run needed more than a small tune-up: the team left without enough shared clarity to trust the MVP shape.";
+
+      takeaway +=
+        " Rebuild the next run in this order: understand the real complaint problem first, align the room on what matters most, make the rules testable, and cut scope wherever risk stays unresolved.";
+
+      if (riskExposure > 40) {
+        takeaway +=
+          " Risk Exposure is the clearest warning signal here, so treat dependencies, audit constraints, vague ownership rules, and schedule assumptions as first-class discussion topics instead of leaving them implicit.";
+      }
+
+      return takeaway;
     }
 
     let takeaway =
@@ -224,7 +235,7 @@
       strongLabel +
       ". Biggest gap: " +
       weakLabel +
-      ". You are close to a workable outcome, but MVP discipline depends on sharpening that weaker area.";
+      ". You are close to a workable outcome, but the run still needs tighter scope control and clearer delivery framing before it feels fully safe.";
 
     if (riskExposure > 40) {
       takeaway += " Please take the project risks into account next time.";
@@ -233,16 +244,60 @@
     return takeaway;
   }
 
-  function buildImprovementNote(weakestMetric) {
+  function buildImprovementHeading(endingKey) {
+    if (endingKey === "strongOutcome") {
+      return "Keep sharpening next run";
+    }
+
+    if (endingKey === "poorOutcome") {
+      return "Recovery plan for next run";
+    }
+
+    return "What to tighten next run";
+  }
+
+  function buildImprovementNote(endingKey, weakestMetric, scores) {
+    if (endingKey === "strongOutcome") {
+      if (weakestMetric === "businessUnderstanding") {
+        return "Push one layer deeper on diagnosis next time: ask for sharper examples of where the process breaks, who feels the impact first, and which outcome proves the MVP is working.";
+      }
+
+      if (weakestMetric === "teamTrust") {
+        return "You already moved the team well. Next run, strengthen trust further by summarising stakeholder concerns back to them and showing exactly how their input changes the MVP cut.";
+      }
+
+      return "You created a strong release shape. Next run, go one step further by turning more edge cases and acceptance examples into explicit build-ready detail before delivery starts.";
+    }
+
+    if (endingKey === "poorOutcome") {
+      const riskStep =
+        scores.riskExposure > 40
+          ? "This is the red warning signal in your run. Name dependencies, timeline assumptions, compliance concerns, unresolved ownership rules, and edge cases early. If the risk stays open, reduce the MVP until the remaining scope is safe."
+          : "Call out assumptions and dependencies early so the team knows what could still derail the MVP.";
+
+      return `
+        <ul class="ending-guidance-list">
+          <li><strong>Business Understanding:</strong> Start by separating the real complaint-handling pain from feature requests. Ask where the workflow breaks, which complaint types hurt most, and what business outcome matters first.</li>
+          <li><strong>Team Trust:</strong> Slow the room down enough to acknowledge each role's concern. Show stakeholders that their risks, constraints, and delivery pressures are shaping the recommendation rather than being ignored.</li>
+          <li><strong>Delivery Readiness:</strong> Turn vague requests into rules, examples, ownership logic, and acceptance criteria before asking build or test to move. If engineers or QA are guessing, the BA work is not finished yet.</li>
+          <li><strong>Risk Exposure:</strong> ${riskStep}</li>
+        </ul>
+      `;
+    }
+
     if (weakestMetric === "businessUnderstanding") {
-      return "Next time, spend longer separating root causes from requested features before steering the room toward solution ideas.";
+      return "Spend longer separating root causes from requested features before steering the room toward solution ideas, and validate which user group or pain point needs relief first.";
     }
 
     if (weakestMetric === "teamTrust") {
-      return "Next time, use stakeholder concerns as design input instead of pushing past them. Alignment is a delivery tool, not a soft extra.";
+      return "Use stakeholder concerns as design input instead of pushing past them. Alignment is a delivery tool, not a soft extra, and it becomes visible when you reflect concerns back into scope choices.";
     }
 
-    return "Next time, turn uncertainty into explicit rules, examples, and acceptance criteria earlier so build and test can move without guesswork.";
+    if (scores.riskExposure > 40) {
+      return "Clarify unresolved risk earlier next time. Call out dependencies, schedule assumptions, and risky shortcuts explicitly, then trim the MVP until the remaining scope can be delivered with confidence.";
+    }
+
+    return "Turn uncertainty into explicit rules, examples, and acceptance criteria earlier so build and test can move without guesswork, especially around ownership changes, edge cases, and test conditions.";
   }
 
   function getStrongestPositiveMetric() {
@@ -920,12 +975,12 @@
 
         <div class="recommendation-block">
           <strong>Learning takeaway</strong>
-          <span>${ending.takeaway}</span>
+          <div class="recommendation-copy">${ending.takeaway}</div>
         </div>
 
         <div class="recommendation-block">
-          <strong>What to improve next run</strong>
-          <span>${ending.improvement}</span>
+          <strong>${ending.improvementHeading}</strong>
+          <div class="recommendation-copy">${ending.improvement}</div>
         </div>
 
         <div class="ending-actions">

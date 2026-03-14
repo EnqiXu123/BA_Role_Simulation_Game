@@ -1672,6 +1672,28 @@ select {
   border: 1px solid rgba(20, 38, 61, 0.08);
 }
 
+.recommendation-copy {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.recommendation-copy p,
+.recommendation-copy ul {
+  margin: 0;
+}
+
+.ending-guidance-list {
+  padding-left: 20px;
+}
+
+.ending-guidance-list li + li {
+  margin-top: 10px;
+}
+
+.ending-guidance-list strong {
+  color: #17344d;
+}
+
 .ending-actions {
   margin-top: 24px;
   display: flex;

@@ -194,12 +194,12 @@
       key: endingKey,
       strongestMetric,
       weakestMetric,
-      takeaway: buildTakeaway(endingKey, strongestMetric, weakestMetric),
+      takeaway: buildTakeaway(endingKey, strongestMetric, weakestMetric, scores.riskExposure),
       improvement: buildImprovementNote(weakestMetric),
     };
   }
 
-  function buildTakeaway(endingKey, strongestMetric, weakestMetric) {
+  function buildTakeaway(endingKey, strongestMetric, weakestMetric, riskExposure) {
     const strongLabel = config.scoreMeta[strongestMetric].label;
     const weakLabel = config.scoreMeta[weakestMetric].label;
 
@@ -219,13 +219,18 @@
       );
     }
 
-    return (
+    let takeaway =
       "Best signal: " +
       strongLabel +
       ". Biggest gap: " +
       weakLabel +
-      ". You are close to a workable outcome, but MVP discipline depends on sharpening that weaker area."
-    );
+      ". You are close to a workable outcome, but MVP discipline depends on sharpening that weaker area.";
+
+    if (riskExposure > 40) {
+      takeaway += " Please take the project risks into account next time.";
+    }
+
+    return takeaway;
   }
 
   function buildImprovementNote(weakestMetric) {
@@ -815,11 +820,31 @@
     const recommendationLabel = state.finalRecommendation
       ? state.finalRecommendation.label
       : "No final recommendation selected.";
+    const highlightMixedRiskExposure =
+      ending.key === "mixedOutcome" && state.scores.riskExposure > 40;
+    const strongOutcomeCongrats =
+      ending.key === "strongOutcome"
+        ? `<p class="ending-congrats">${
+            state.playerName
+              ? `Congrats ${escapeHtml(state.playerName)}, you have won a Gold BA Trophy for your hard work!`
+              : "Congrats, you have won a Gold BA Trophy for your hard work!"
+          }</p>`
+        : "";
+    const strongOutcomeTrophy =
+      ending.key === "strongOutcome"
+        ? `
+            <figure class="ending-trophy" aria-hidden="true">
+              <img src="assets/ba-trophy.svg" alt="">
+            </figure>
+          `
+        : "";
 
     const scoreSummary = Object.entries(config.scoreMeta)
       .map(
         ([metric, meta]) => `
-          <article class="score-summary-card">
+          <article class="score-summary-card ${
+            highlightMixedRiskExposure && metric === "riskExposure" ? "score-summary-card-risk-alert" : ""
+          }">
             <strong>${meta.label}</strong>
             <span>${state.scores[metric]}</span>
             <p>${getMetricStatus(metric, state.scores[metric])}</p>
@@ -830,11 +855,57 @@
 
     const strongestLabel = config.scoreMeta[ending.strongestMetric].label;
     const weakestLabel = config.scoreMeta[ending.weakestMetric].label;
+    const confettiPalette = [
+      "#ff8f6f",
+      "#ffd666",
+      "#42b7a3",
+      "#557a5a",
+      "#4d8dd6",
+      "#ffb94a",
+      "#f06292",
+      "#6f80d8",
+      "#d3a23a",
+      "#4db8a3",
+    ];
+    const confettiPieces = Array.from({ length: 30 }, (_, index) => {
+      const left = 2 + ((index * 7) % 94);
+      const delay = (index % 6) * 0.08 + Math.floor(index / 6) * 0.03;
+      const duration = 3.4 + (index % 5) * 0.18 + Math.floor(index / 8) * 0.06;
+      const rotation = (index % 2 === 0 ? -1 : 1) * (12 + (index % 6) * 4);
+      const drift = (index % 2 === 0 ? -1 : 1) * (12 + (index % 5) * 7);
+      return {
+        left,
+        delay,
+        duration,
+        rotation,
+        drift,
+        color: confettiPalette[index % confettiPalette.length],
+      };
+    })
+      .map(
+        (piece) => `
+          <span
+            class="confetti-piece"
+            style="--left:${piece.left}%;--delay:${piece.delay}s;--duration:${piece.duration}s;--rotation:${piece.rotation}deg;--drift:${piece.drift}px;--color:${piece.color};"
+            aria-hidden="true"
+          ></span>
+        `
+      )
+      .join("");
 
     screenRoot.innerHTML = `
       <section class="ending-card">
+        <div class="confetti-layer" aria-hidden="true">
+          ${confettiPieces}
+        </div>
         <div class="ending-banner">${ending.category}</div>
-        <h2>${ending.title}</h2>
+        <div class="ending-title-row">
+          <div class="ending-title-copy">
+            <h2>${ending.title}</h2>
+            ${strongOutcomeCongrats}
+          </div>
+          ${strongOutcomeTrophy}
+        </div>
         <p class="ending-narrative">${ending.narrative}</p>
 
         <div class="ending-grid">

@@ -1193,6 +1193,9 @@ select {
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(20, 38, 61, 0.08);
   box-shadow: 0 16px 26px rgba(41, 54, 73, 0.08);
+  justify-self: end;
+  transform: rotate(2deg);
+  animation: float-bob 3.6s ease-in-out infinite;
 }
 
 .scene-character {
@@ -1587,6 +1590,80 @@ select {
   letter-spacing: 0.12em;
 }
 
+.confetti-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -18px;
+  left: var(--left);
+  width: 12px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--color);
+  opacity: 0;
+  transform: rotate(var(--rotation));
+  animation: confetti-drop var(--duration) ease-in forwards;
+  animation-delay: var(--delay);
+  box-shadow: 0 8px 14px rgba(20, 38, 61, 0.12);
+}
+
+.confetti-piece:nth-child(3n) {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.confetti-piece:nth-child(4n) {
+  width: 14px;
+  height: 18px;
+  clip-path: polygon(50% 0, 100% 38%, 82% 100%, 18% 100%, 0 38%);
+}
+
+.ending-card > *:not(.confetti-layer) {
+  position: relative;
+  z-index: 1;
+}
+
+.ending-title-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+}
+
+.ending-title-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.ending-congrats {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.55;
+  color: #8f5c16;
+  font-weight: 700;
+}
+
+.ending-trophy {
+  width: min(100%, 188px);
+  margin: 0;
+  justify-self: end;
+  transform: rotate(2deg);
+  animation: float-bob 3.6s ease-in-out infinite;
+}
+
+.ending-trophy img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .recommendation-block {
   margin-top: 24px;
   padding: 18px;
@@ -1624,6 +1701,12 @@ select {
 .score-summary-card span {
   font-size: 1.7rem;
   font-family: var(--serif);
+}
+
+.score-summary-card-risk-alert strong,
+.score-summary-card-risk-alert span {
+  color: #b22222;
+  font-weight: 800;
 }
 
 .score-summary-card p {
@@ -1686,6 +1769,24 @@ select {
 
   50% {
     transform: rotate(1deg) translateY(-6px);
+  }
+}
+
+@keyframes confetti-drop {
+  0% {
+    opacity: 0;
+    top: -24px;
+    transform: translateX(0) rotate(var(--rotation));
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    top: calc(100% + 36px);
+    transform: translateX(var(--drift)) rotate(calc(var(--rotation) + 180deg));
   }
 }
 
@@ -1766,6 +1867,16 @@ select {
 
   .scene-header {
     grid-template-columns: 1fr;
+  }
+
+  .ending-title-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .ending-trophy {
+    width: 120px;
+    justify-self: start;
   }
 
   .scene-meta {

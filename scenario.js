@@ -142,6 +142,10 @@ window.GAME_CONFIG = {
         name: "Lena",
         role: "Product Owner",
         title: "Complaints Platform Product Owner",
+        illustration: {
+          src: "assets/lena-cartoon.svg",
+          alt: "Cartoon illustration of Lena, Complaints Platform Product Owner, with short auburn curls, glasses, and a green blazer",
+        },
       },
       subtitle: "Value, scope, and MVP outcome",
       dialogue: [
@@ -218,6 +222,10 @@ window.GAME_CONFIG = {
         name: "Chris",
         role: "Project Manager",
         title: "Delivery Lead",
+        illustration: {
+          src: "assets/chris-cartoon.svg",
+          alt: "Cartoon illustration of Chris, Delivery Lead, with short dark hair, a trimmed beard, and a burgundy shirt under a charcoal jacket",
+        },
       },
       subtitle: "Timeline pressure and coordination risk",
       dialogue: [
@@ -285,6 +293,10 @@ window.GAME_CONFIG = {
         name: "Nia",
         role: "UX Designer",
         title: "Service and Workflow Designer",
+        illustration: {
+          src: "assets/nia-cartoon.svg",
+          alt: "Cartoon illustration of Nia, Service and Workflow Designer, with textured hair in two puffs, a coral jacket, and a workflow sketch board",
+        },
       },
       subtitle: "User journey and workflow pain points",
       dialogue: [

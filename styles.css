@@ -789,8 +789,8 @@ select {
   top: 16px;
   right: 16px;
   font-size: 0.82rem;
-  font-weight: 700;
-  color: rgba(20, 38, 61, 0.26);
+  font-weight: 800;
+  color: #14b84a;
 }
 
 .stage-preview p {
@@ -809,11 +809,19 @@ select {
   border-radius: var(--radius-md);
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.48);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.metric-card-updated {
+  border-color: rgba(20, 38, 61, 0.16);
+  box-shadow: 0 14px 24px rgba(41, 54, 73, 0.08);
+  transform: translateY(-1px);
 }
 
 .metric-top {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 12px;
   margin-bottom: 10px;
 }
@@ -822,9 +830,67 @@ select {
   font-size: 0.96rem;
 }
 
-.metric-top span {
-  font-size: 0.82rem;
+.metric-score-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.metric-value {
+  font-size: 1.02rem;
   font-weight: 700;
+  color: var(--ink);
+}
+
+.metric-delta {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.metric-status,
+.metric-direction {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.metric-delta {
+  padding: 5px 8px;
+  border-radius: 999px;
+}
+
+.metric-delta.is-positive {
+  background: rgba(15, 106, 105, 0.12);
+  color: #0f6a69;
+}
+
+.metric-delta.is-negative {
+  background: rgba(181, 82, 58, 0.12);
+  color: #9b3f2c;
+}
+
+.metric-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.metric-status {
+  color: #17344d;
+}
+
+.metric-direction {
+  color: var(--muted);
 }
 
 .metric-card p {
@@ -844,6 +910,10 @@ select {
   display: block;
   height: 100%;
   border-radius: inherit;
+}
+
+.meter-fill {
+  transition: width 260ms ease;
 }
 
 .metric-card[data-metric="businessUnderstanding"] .meter span,
@@ -1406,6 +1476,7 @@ select {
   border: 1px solid rgba(20, 38, 61, 0.12);
   background: rgba(255, 255, 255, 0.72);
   color: var(--ink);
+  cursor: pointer;
   animation: slide-up 320ms ease-out both;
   animation-delay: var(--delay, 0ms);
   align-items: center;

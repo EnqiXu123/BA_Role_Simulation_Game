@@ -30,6 +30,7 @@
       currentSceneId: config.firstSceneId,
       selectedChoiceId: null,
       lastFeedback: null,
+      lastScoreEffects: null,
       pendingNextSceneId: null,
       insights: [],
       scores: { ...config.initialScores },
@@ -109,6 +110,7 @@
     state.currentSceneId = state.pendingNextSceneId;
     state.selectedChoiceId = null;
     state.lastFeedback = null;
+    state.lastScoreEffects = null;
     state.pendingNextSceneId = null;
     render();
   }
@@ -126,6 +128,7 @@
 
     state.selectedChoiceId = choice.id;
     state.lastFeedback = choice.feedback;
+    state.lastScoreEffects = sanitizeScoreEffects(choice.scoreEffects);
     state.pendingNextSceneId = choice.nextSceneId || currentScene.nextSceneId;
     state.choiceHistory.push({
       sceneId: currentScene.id,
@@ -271,6 +274,7 @@
       currentSceneId: state.currentSceneId,
       selectedChoiceId: state.selectedChoiceId,
       lastFeedback: state.lastFeedback,
+      lastScoreEffects: state.lastScoreEffects,
       pendingNextSceneId: state.pendingNextSceneId,
       insights: state.insights,
       scores: state.scores,
@@ -319,6 +323,7 @@
       selectedChoiceId,
       lastFeedback:
         selectedChoiceId && typeof savedState.lastFeedback === "string" ? savedState.lastFeedback : null,
+      lastScoreEffects: selectedChoiceId ? sanitizeScoreEffects(savedState.lastScoreEffects) : null,
       pendingNextSceneId:
         selectedChoiceId &&
         (savedState.pendingNextSceneId === "ending" || getSceneById(savedState.pendingNextSceneId))
@@ -352,6 +357,25 @@
     });
 
     return sanitized;
+  }
+
+  function sanitizeScoreEffects(scoreEffects) {
+    if (!scoreEffects || typeof scoreEffects !== "object") {
+      return null;
+    }
+
+    const sanitized = {};
+    let hasChange = false;
+
+    Object.keys(config.scoreMeta).forEach((metric) => {
+      const value = scoreEffects[metric];
+      if (typeof value === "number" && Number.isFinite(value) && value !== 0) {
+        sanitized[metric] = Math.round(value);
+        hasChange = true;
+      }
+    });
+
+    return hasChange ? sanitized : null;
   }
 
   function isInsightShape(insight) {
@@ -421,20 +445,50 @@
     scoreBoard.innerHTML = Object.entries(config.scoreMeta)
       .map(([metric, meta]) => {
         const value = state.scores[metric];
+        const delta = state.lastScoreEffects ? state.lastScoreEffects[metric] || 0 : 0;
+        const deltaPrefix = delta > 0 ? "+" : "";
+        const metricDirection = metric === "riskExposure" ? "Lower is better" : "Higher is better";
+        const deltaToneClass = getMetricDeltaToneClass(metric, delta);
+        const meterStartValue = clamp(value - delta, 0, 100);
         return `
-          <article class="metric-card" data-metric="${metric}">
+          <article class="metric-card ${delta ? "metric-card-updated" : ""}" data-metric="${metric}">
             <div class="metric-top">
               <strong>${meta.label}</strong>
-              <span>${getMetricStatus(metric, value)}</span>
+              <div class="metric-score-meta">
+                ${delta ? `<span class="metric-delta ${deltaToneClass}">${deltaPrefix}${delta}</span>` : ""}
+                <span class="metric-value">${value}</span>
+              </div>
             </div>
             <div class="meter" aria-hidden="true">
-              <span style="width: ${value}%"></span>
+              <span class="meter-fill" data-target-width="${value}" style="width: ${meterStartValue}%"></span>
+            </div>
+            <div class="metric-bottom">
+              <span class="metric-status">${getMetricStatus(metric, value)}</span>
+              <span class="metric-direction">${metricDirection}</span>
             </div>
             <p>${meta.description}</p>
           </article>
         `;
       })
       .join("");
+
+    window.requestAnimationFrame(() => {
+      scoreBoard.querySelectorAll(".meter-fill").forEach((fill) => {
+        fill.style.width = `${fill.dataset.targetWidth}%`;
+      });
+    });
+  }
+
+  function getMetricDeltaToneClass(metric, delta) {
+    if (!delta) {
+      return "";
+    }
+
+    if (metric === "riskExposure") {
+      return delta < 0 ? "is-positive" : "is-negative";
+    }
+
+    return delta > 0 ? "is-positive" : "is-negative";
   }
 
   function renderInsightsPanel() {

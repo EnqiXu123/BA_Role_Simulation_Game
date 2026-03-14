@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 300" role="img" aria-labelledby="title desc">
+  <title id="title">Nia cartoon portrait</title>
+  <desc id="desc">Cartoon illustration of Nia, Service and Workflow Designer, with textured hair in two puffs, a coral jacket, and a workflow sketch board.</desc>
+  <defs>
+    <linearGradient id="bg" x1="42" y1="30" x2="280" y2="268" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff2dd"/>
+      <stop offset="0.52" stop-color="#ffe7ef"/>
+      <stop offset="1" stop-color="#def4f1"/>
+    </linearGradient>
+    <linearGradient id="jacket" x1="100" y1="150" x2="228" y2="252" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff8d73"/>
+      <stop offset="1" stop-color="#d95f52"/>
+    </linearGradient>
+    <linearGradient id="board" x1="188" y1="178" x2="264" y2="242" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dcebf1"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M62 68c22-34 60-52 103-52 40 0 76 15 100 43 24 28 34 66 28 104-7 42-34 80-73 101-39 22-89 22-128 2-38-20-64-57-68-99-3-35 9-67 38-99z" fill="url(#bg)"/>
+
+  <circle cx="54" cy="92" r="13" fill="#4db8a3" opacity="0.24"/>
+  <circle cx="270" cy="72" r="11" fill="#ffb650" opacity="0.32"/>
+  <circle cx="260" cy="232" r="15" fill="#ff9a83" opacity="0.24"/>
+
+  <rect x="42" y="66" width="72" height="54" rx="16" fill="#ffffff" opacity="0.92"/>
+  <path d="M56 81h18m8 0h18m-44 13h28m10 0h8m-46 13h14m8 0h24" fill="none" stroke="#2e7b77" stroke-linecap="round" stroke-width="6"/>
+
+  <rect x="224" y="60" width="50" height="68" rx="16" fill="#ffffff" opacity="0.9"/>
+  <rect x="236" y="74" width="26" height="7" rx="3.5" fill="#17344d" opacity="0.14"/>
+  <path d="M238 94l8 8 8-8 8 8" fill="none" stroke="#ff8d73" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"/>
+
+  <path d="M108 151c14-18 35-28 58-28s46 10 62 29l14 66H94l14-67z" fill="url(#jacket)"/>
+  <path d="M147 152h26v66h-26z" fill="#fff6ef"/>
+  <path d="M144 152c7 8 14 12 23 12 10 0 19-4 28-12" fill="none" stroke="#ffe6db" stroke-linecap="round" stroke-width="10"/>
+  <path d="M131 214h66v18c0 7-5 12-12 12h-42c-7 0-12-5-12-12v-18z" fill="#17344d" opacity="0.12"/>
+
+  <path d="M108 170c-18 9-30 24-36 42l22 12 26-38-12-16z" fill="#8f573f"/>
+  <circle cx="84" cy="221" r="10" fill="#8f573f"/>
+  <path d="M217 169c18 5 31 16 40 32l-20 18-30-28 10-22z" fill="#8f573f"/>
+  <circle cx="254" cy="213" r="10" fill="#8f573f"/>
+
+  <path d="M112 100c4-29 24-47 54-47 31 0 52 20 53 48 0 32-22 57-55 57-32 0-52-24-52-58z" fill="#8f573f"/>
+  <circle cx="123" cy="72" r="18" fill="#1f2430"/>
+  <circle cx="200" cy="72" r="18" fill="#1f2430"/>
+  <circle cx="161" cy="64" r="22" fill="#1f2430"/>
+  <path d="M116 84c11-8 26-12 45-12 20 0 36 4 48 13l1 14c-11-8-27-13-49-13-22 0-38 5-47 13l2-15z" fill="#1f2430"/>
+  <path d="M110 104c4-29 24-47 54-47 31 0 52 20 53 48 0 32-22 57-55 57-32 0-52-24-52-58z" fill="#8f573f"/>
+
+  <path d="M135 101c5-4 11-5 17-3" fill="none" stroke="#3e2419" stroke-linecap="round" stroke-width="3"/>
+  <path d="M173 98c6-2 12-1 18 3" fill="none" stroke="#3e2419" stroke-linecap="round" stroke-width="3"/>
+  <circle cx="146" cy="110" r="4" fill="#1f2430"/>
+  <circle cx="181" cy="110" r="4" fill="#1f2430"/>
+  <path d="M149 129c8 5 17 5 25 0" fill="none" stroke="#b96957" stroke-linecap="round" stroke-width="4"/>
+
+  <rect x="188" y="178" width="76" height="58" rx="12" fill="url(#board)"/>
+  <rect x="196" y="186" width="60" height="42" rx="8" fill="#ffffff"/>
+  <path d="M204 198h18m10 0h12" fill="none" stroke="#2e7b77" stroke-linecap="round" stroke-width="5"/>
+  <path d="M204 210h10l8-8 8 8h18" fill="none" stroke="#ff8d73" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"/>
+  <path d="M204 221h24m8 0h12" fill="none" stroke="#f0ad4e" stroke-linecap="round" stroke-width="5"/>
+  <rect x="188" y="172" width="30" height="12" rx="6" fill="#4db8a3"/>
+
+  <rect x="72" y="240" width="178" height="22" rx="11" fill="#244a6b"/>
+  <rect x="90" y="232" width="142" height="16" rx="8" fill="#4e7394"/>
+
+  <path d="M240 35c11 0 20 9 20 20 0 5-2 10-5 13l5 12-12-8h-8c-11 0-20-9-20-20s9-20 20-20z" fill="#ffffff" opacity="0.95"/>
+  <path d="M236 54h8m8 0h8m-24 8h24" fill="none" stroke="#2e7b77" stroke-linecap="round" stroke-width="4.5"/>
+</svg>

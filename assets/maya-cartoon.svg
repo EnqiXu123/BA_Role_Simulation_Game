@@ -44,9 +44,11 @@
   <path d="M128 146c11 24 16 50 14 76h-20c-9-16-15-34-18-52 5-11 13-18 24-24z" fill="#17344d"/>
   <path d="M201 146c-11 24-16 50-14 76h20c9-16 15-34 18-52-5-11-13-18-24-24z" fill="#17344d"/>
 
+  <path d="M137 101c5-4 10-5 15-4" fill="none" stroke="#14324b" stroke-linecap="round" stroke-width="3.5"/>
+  <path d="M173 97c5-1 10 0 15 4" fill="none" stroke="#14324b" stroke-linecap="round" stroke-width="3.5"/>
   <circle cx="145" cy="110" r="4" fill="#14324b"/>
   <circle cx="180" cy="110" r="4" fill="#14324b"/>
-  <path d="M149 126c8 7 17 7 25 0" fill="none" stroke="#c97461" stroke-linecap="round" stroke-width="4"/>
+  <path d="M149 131c8-5 17-5 25 0" fill="none" stroke="#b86a5d" stroke-linecap="round" stroke-width="4"/>
 
   <path d="M105 169c-17 10-29 25-34 44l25 10 23-40-14-14z" fill="#f1c5ab"/>
   <circle cx="89" cy="222" r="10" fill="#f1c5ab"/>

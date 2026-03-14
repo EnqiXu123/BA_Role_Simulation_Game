@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BA Simulation Game - MVP Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <h1>BA Simulation Game</h1>
+      </div>
+      <div class="header-meta">
+        <button id="restartButton" class="ghost-button" hidden>Restart run</button>
+      </div>
+    </header>
+
+    <main class="app-grid">
+      <aside class="sidebar sidebar-left">
+        <section class="panel">
+          <div class="panel-heading">
+            <p class="eyebrow">Live readout</p>
+            <h2>BA Signal Board</h2>
+          </div>
+          <div id="scoreBoard" class="score-board"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <p class="eyebrow">Case notes</p>
+            <h2>Unlocked Insights</h2>
+          </div>
+          <div id="insightsPanel" class="insights-panel"></div>
+        </section>
+      </aside>
+
+      <section class="content-panel">
+        <div id="screenRoot"></div>
+      </section>
+
+      <aside class="sidebar sidebar-right">
+        <section class="panel flow-panel">
+          <div class="panel-heading">
+            <p class="eyebrow">Journey</p>
+            <h2>Scenario Flow</h2>
+          </div>
+          <ol id="stageTracker" class="stage-tracker"></ol>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script src="scenario.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

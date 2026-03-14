@@ -437,6 +437,10 @@ window.GAME_CONFIG = {
         name: "Ethan",
         role: "Developer",
         title: "Lead Engineer",
+        illustration: {
+          src: "assets/ethan-cartoon.svg",
+          alt: "Cartoon illustration of Ethan, Lead Engineer, with short spiky hair, a navy hoodie, and a code card",
+        },
       },
       subtitle: "Implementation logic and ambiguity reduction",
       dialogue: [
@@ -504,6 +508,10 @@ window.GAME_CONFIG = {
         name: "Priya",
         role: "Tester",
         title: "Quality Analyst",
+        illustration: {
+          src: "assets/priya-cartoon.svg",
+          alt: "Cartoon illustration of Priya, Quality Analyst, with a low ponytail, a mustard jacket, and a checklist card",
+        },
       },
       subtitle: "Acceptance criteria and quality risk",
       dialogue: [

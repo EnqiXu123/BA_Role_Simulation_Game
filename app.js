@@ -820,30 +820,16 @@
     const recommendationLabel = state.finalRecommendation
       ? state.finalRecommendation.label
       : "No final recommendation selected.";
-    const highlightMixedRiskExposure =
-      ending.key === "mixedOutcome" && state.scores.riskExposure > 40;
-    const strongOutcomeCongrats =
-      ending.key === "strongOutcome"
-        ? `<p class="ending-congrats">${
-            state.playerName
-              ? `Congrats ${escapeHtml(state.playerName)}, you have won a Gold BA Trophy for your hard work!`
-              : "Congrats, you have won a Gold BA Trophy for your hard work!"
-          }</p>`
-        : "";
-    const strongOutcomeTrophy =
-      ending.key === "strongOutcome"
-        ? `
-            <figure class="ending-trophy" aria-hidden="true">
-              <img src="assets/ba-trophy.svg" alt="">
-            </figure>
-          `
-        : "";
+    const highlightRiskExposureAlert =
+      (ending.key === "mixedOutcome" || ending.key === "poorOutcome") &&
+      state.scores.riskExposure > 40;
+    const endingAward = getEndingAwardContent(ending.key, state.playerName);
 
     const scoreSummary = Object.entries(config.scoreMeta)
       .map(
         ([metric, meta]) => `
           <article class="score-summary-card ${
-            highlightMixedRiskExposure && metric === "riskExposure" ? "score-summary-card-risk-alert" : ""
+            highlightRiskExposureAlert && metric === "riskExposure" ? "score-summary-card-risk-alert" : ""
           }">
             <strong>${meta.label}</strong>
             <span>${state.scores[metric]}</span>
@@ -902,9 +888,9 @@
         <div class="ending-title-row">
           <div class="ending-title-copy">
             <h2>${ending.title}</h2>
-            ${strongOutcomeCongrats}
+            ${endingAward.message}
           </div>
-          ${strongOutcomeTrophy}
+          ${endingAward.trophy}
         </div>
         <p class="ending-narrative">${ending.narrative}</p>
 
@@ -947,6 +933,42 @@
         </div>
       </section>
     `;
+  }
+
+  function getEndingAwardContent(endingKey, playerName) {
+    const safeName = playerName ? escapeHtml(playerName) : "";
+
+    if (endingKey === "strongOutcome") {
+      return {
+        message: `<p class="ending-congrats">${
+          safeName
+            ? `Congrats ${safeName}, you have won a Gold BA Trophy for your hard work!`
+            : "Congrats, you have won a Gold BA Trophy for your hard work!"
+        }</p>`,
+        trophy: `
+          <figure class="ending-trophy" aria-hidden="true">
+            <img src="assets/ba-trophy.svg" alt="">
+          </figure>
+        `,
+      };
+    }
+
+    if (endingKey === "poorOutcome") {
+      return {
+        message: `<p class="ending-congrats">${
+          safeName
+            ? `Congrats ${safeName}, you have won a Bronze BA Trophy for your hard work!`
+            : "Congrats, you have won a Bronze BA Trophy for your hard work!"
+        }</p>`,
+        trophy: `
+          <figure class="ending-trophy" aria-hidden="true">
+            <img src="assets/ba-trophy-bronze.svg" alt="">
+          </figure>
+        `,
+      };
+    }
+
+    return { message: "", trophy: "" };
   }
 
   function renderScoreImpactChips(scoreEffects) {

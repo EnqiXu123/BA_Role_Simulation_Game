@@ -652,7 +652,7 @@ window.GAME_CONFIG = {
     },
     poorOutcome: {
       title: "Busy Delivery, Weak Diagnosis",
-      category: "Poor outcome",
+      category: "IMPROVEMENT NEEDED",
       narrative:
         "The team left with activity but not enough shared understanding. Scope drift and unresolved risk now threaten the release, and the chosen direction may not address the actual complaint-handling pain.",
     },

@@ -36,6 +36,9 @@ Product owner
 
 Enqi Xu
 
+Document purpose
+
+This document defines the MVP requirements for an educational simulation game designed to help people who are new to Business Analyst roles learn how to interact with project stakeholders and team members in a realistic project setting.
 
 The MVP is intended to be lightweight, browser-based, choice-driven, and suitable for iterative build using vibe coding / Codex.
 

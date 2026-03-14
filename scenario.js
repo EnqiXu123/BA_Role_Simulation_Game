@@ -62,9 +62,13 @@ window.GAME_CONFIG = {
       id: "business-person",
       stageId: "stage-1",
       npc: {
-        name: "Maya Patel",
-        role: "Business Person",
+        name: "Maya",
+        role: "Business stakeholder",
         title: "Head of Complaints Operations",
+        illustration: {
+          src: "assets/maya-cartoon.svg",
+          alt: "Cartoon illustration of Maya, Head of Complaints Operations, with long hair and a blue top",
+        },
       },
       subtitle: "Business pain and current-state frustration",
       dialogue: [
@@ -89,6 +93,7 @@ window.GAME_CONFIG = {
           },
           insight: {
             id: "fragmented-intake",
+            type: "root-cause",
             title: "Fragmented intake",
             detail:
               "Handlers re-enter complaint details across email, spreadsheet, and CRM, so ownership and SLA status drift quickly.",
@@ -122,6 +127,7 @@ window.GAME_CONFIG = {
           },
           insight: {
             id: "wishlist-noise",
+            type: "noise",
             title: "Wishlist noise",
             detail:
               "The business already has a long list of improvement ideas, but many requests describe preferred features rather than root causes.",
@@ -133,7 +139,7 @@ window.GAME_CONFIG = {
       id: "product-owner",
       stageId: "stage-1",
       npc: {
-        name: "Lena Brooks",
+        name: "Lena",
         role: "Product Owner",
         title: "Complaints Platform Product Owner",
       },
@@ -161,6 +167,7 @@ window.GAME_CONFIG = {
           },
           insight: {
             id: "outcome-over-features",
+            type: "mvp-scope",
             title: "Outcome over feature count",
             detail:
               "The Product Owner will trade breadth for a release that clearly reduces missed SLA breaches.",
@@ -196,6 +203,7 @@ window.GAME_CONFIG = {
           },
           insight: {
             id: "primary-user",
+            type: "user-focus",
             title: "Primary MVP user",
             detail:
               "Operations analysts are the first users who need relief. Branch staff requests can be deferred.",
@@ -207,7 +215,7 @@ window.GAME_CONFIG = {
       id: "project-manager",
       stageId: "stage-1",
       npc: {
-        name: "Chris Lau",
+        name: "Chris",
         role: "Project Manager",
         title: "Delivery Lead",
       },
@@ -235,6 +243,7 @@ window.GAME_CONFIG = {
           },
           insight: {
             id: "dependency-window",
+            type: "risk",
             title: "Dependency window",
             detail:
               "The quarter-end steering date is fixed, but anything tied to the customer data service is a schedule risk.",
@@ -273,7 +282,7 @@ window.GAME_CONFIG = {
       id: "ux-designer",
       stageId: "stage-2",
       npc: {
-        name: "Nia Harper",
+        name: "Nia",
         role: "UX Designer",
         title: "Service and Workflow Designer",
       },
@@ -301,6 +310,7 @@ window.GAME_CONFIG = {
           },
           insight: {
             id: "context-loss",
+            type: "user-pain",
             title: "Context loss in triage",
             detail:
               "Users lose context when complaint notes, ownership, and SLA dates sit in different places during triage.",
@@ -340,7 +350,7 @@ window.GAME_CONFIG = {
       id: "solution-designer",
       stageId: "stage-2",
       npc: {
-        name: "Omar Reed",
+        name: "Omar",
         role: "Solution Designer",
         title: "Architecture and Platform Lead",
       },
@@ -368,6 +378,7 @@ window.GAME_CONFIG = {
           },
           insight: {
             id: "audit-trail",
+            type: "constraint",
             title: "Audit trail is mandatory",
             detail:
               "The safest MVP keeps core complaint tracking inside the existing platform and avoids heavy external automation.",
@@ -407,7 +418,7 @@ window.GAME_CONFIG = {
       id: "developer",
       stageId: "stage-3",
       npc: {
-        name: "Ethan Cole",
+        name: "Ethan",
         role: "Developer",
         title: "Lead Engineer",
       },
@@ -435,6 +446,7 @@ window.GAME_CONFIG = {
           },
           insight: {
             id: "rule-gaps",
+            type: "logic-gap",
             title: "Rule gaps",
             detail:
               "Ownership transfer and reopened complaints are the main logic gaps blocking confident implementation.",
@@ -473,7 +485,7 @@ window.GAME_CONFIG = {
       id: "tester",
       stageId: "stage-3",
       npc: {
-        name: "Priya Shah",
+        name: "Priya",
         role: "Tester",
         title: "Quality Analyst",
       },
@@ -501,6 +513,7 @@ window.GAME_CONFIG = {
           },
           insight: {
             id: "test-examples",
+            type: "quality",
             title: "Quality needs examples",
             detail:
               "Testing needs explicit examples for reopened complaints, paused SLA clocks, ownership changes, and incomplete customer data.",

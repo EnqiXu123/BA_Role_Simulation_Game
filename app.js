@@ -1,21 +1,31 @@
 (function () {
   const config = window.GAME_CONFIG;
+  const STORAGE_KEY = "ba-simulation-game-save-v1";
+  const SAVE_STATUS_DURATION_MS = 1800;
 
   const screenRoot = document.getElementById("screenRoot");
   const scoreBoard = document.getElementById("scoreBoard");
   const insightsPanel = document.getElementById("insightsPanel");
   const stageTracker = document.getElementById("stageTracker");
+  const saveButton = document.getElementById("saveButton");
   const restartButton = document.getElementById("restartButton");
 
-  const state = createInitialState();
+  const state = loadSavedState() || createInitialState();
+  let saveStatusTimeoutId = null;
 
   screenRoot.addEventListener("click", handleScreenClick);
+  saveButton.addEventListener("click", saveGame);
   restartButton.addEventListener("click", restartGame);
+
+  if (state.view === "ending" && !state.ending) {
+    state.ending = evaluateEnding();
+  }
 
   render();
 
   function createInitialState() {
     return {
+      playerName: "",
       view: "intro",
       currentSceneId: config.firstSceneId,
       selectedChoiceId: null,
@@ -30,13 +40,32 @@
   }
 
   function restartGame() {
+    clearSavedGame();
+    resetSaveButton();
     Object.assign(state, createInitialState());
     render();
   }
 
   function startGame() {
-    Object.assign(state, createInitialState(), { view: "scene" });
+    const playerNameInput = document.getElementById("playerNameInput");
+    const playerName = playerNameInput ? normalizePlayerName(playerNameInput.value) : state.playerName;
+    resetSaveButton();
+    Object.assign(state, createInitialState(), { view: "scene", playerName });
     render();
+  }
+
+  function saveGame() {
+    const storage = getStorage();
+    if (!storage || state.view === "intro") {
+      return;
+    }
+
+    try {
+      storage.setItem(STORAGE_KEY, JSON.stringify(getSerializableState()));
+      setSaveButtonStatus("Saved");
+    } catch (error) {
+      setSaveButtonStatus("Save failed");
+    }
   }
 
   function handleScreenClick(event) {
@@ -111,7 +140,7 @@
     applyScoreEffects(choice.scoreEffects || {});
 
     if (choice.insight) {
-      addInsight(choice.insight);
+      addInsight(choice.insight, currentScene);
     }
 
     render();
@@ -125,10 +154,15 @@
     });
   }
 
-  function addInsight(insight) {
+  function addInsight(insight, scene) {
     const exists = state.insights.some((item) => item.id === insight.id);
     if (!exists) {
-      state.insights.push(insight);
+      const currentStage = scene ? config.stages.find((stage) => stage.id === scene.stageId) : null;
+      state.insights.push({
+        ...insight,
+        source: scene ? scene.npc.name : "Team",
+        stageTitle: currentStage ? currentStage.title : "Scenario signal",
+      });
     }
   }
 
@@ -221,11 +255,166 @@
 
   function render() {
     document.body.classList.toggle("intro-mode", state.view === "intro");
-    restartButton.hidden = state.view === "intro";
+    const showRunActions = state.view !== "intro";
+    saveButton.hidden = !showRunActions;
+    restartButton.hidden = !showRunActions;
     renderScoreBoard();
     renderInsightsPanel();
     renderStageTracker();
     renderScreen();
+  }
+
+  function getSerializableState() {
+    return {
+      playerName: state.playerName,
+      view: state.view,
+      currentSceneId: state.currentSceneId,
+      selectedChoiceId: state.selectedChoiceId,
+      lastFeedback: state.lastFeedback,
+      pendingNextSceneId: state.pendingNextSceneId,
+      insights: state.insights,
+      scores: state.scores,
+      choiceHistory: state.choiceHistory,
+      finalRecommendationLabel: state.finalRecommendation ? state.finalRecommendation.label : null,
+    };
+  }
+
+  function loadSavedState() {
+    const storage = getStorage();
+    if (!storage) {
+      return null;
+    }
+
+    try {
+      const rawState = storage.getItem(STORAGE_KEY);
+      if (!rawState) {
+        return null;
+      }
+
+      const savedState = JSON.parse(rawState);
+      return sanitizeSavedState(savedState);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function sanitizeSavedState(savedState) {
+    if (!savedState || typeof savedState !== "object") {
+      return null;
+    }
+
+    const baseState = createInitialState();
+    const scene = getSceneById(savedState.currentSceneId) || getSceneById(baseState.currentSceneId);
+    const validChoiceIds = new Set(scene.choices.map((choice) => choice.id));
+    const selectedChoiceId =
+      typeof savedState.selectedChoiceId === "string" && validChoiceIds.has(savedState.selectedChoiceId)
+        ? savedState.selectedChoiceId
+        : null;
+
+    return {
+      ...baseState,
+      playerName: normalizePlayerName(savedState.playerName),
+      view: savedState.view === "scene" || savedState.view === "ending" ? savedState.view : baseState.view,
+      currentSceneId: scene.id,
+      selectedChoiceId,
+      lastFeedback:
+        selectedChoiceId && typeof savedState.lastFeedback === "string" ? savedState.lastFeedback : null,
+      pendingNextSceneId:
+        selectedChoiceId &&
+        (savedState.pendingNextSceneId === "ending" || getSceneById(savedState.pendingNextSceneId))
+          ? savedState.pendingNextSceneId
+          : null,
+      insights: Array.isArray(savedState.insights)
+        ? savedState.insights.filter(isInsightShape).map((insight) => ({ ...insight }))
+        : [],
+      scores: sanitizeScores(savedState.scores),
+      choiceHistory: Array.isArray(savedState.choiceHistory)
+        ? savedState.choiceHistory.filter(isChoiceHistoryShape).map((entry) => ({ ...entry }))
+        : [],
+      finalRecommendation:
+        typeof savedState.finalRecommendationLabel === "string"
+          ? { label: savedState.finalRecommendationLabel }
+          : null,
+    };
+  }
+
+  function sanitizeScores(scores) {
+    const sanitized = { ...config.initialScores };
+    if (!scores || typeof scores !== "object") {
+      return sanitized;
+    }
+
+    Object.keys(config.scoreMeta).forEach((metric) => {
+      const value = scores[metric];
+      if (typeof value === "number" && Number.isFinite(value)) {
+        sanitized[metric] = clamp(Math.round(value), 0, 100);
+      }
+    });
+
+    return sanitized;
+  }
+
+  function isInsightShape(insight) {
+    return (
+      insight &&
+      typeof insight === "object" &&
+      typeof insight.id === "string" &&
+      typeof insight.title === "string" &&
+      typeof insight.detail === "string"
+    );
+  }
+
+  function isChoiceHistoryShape(entry) {
+    return (
+      entry &&
+      typeof entry === "object" &&
+      typeof entry.sceneId === "string" &&
+      typeof entry.choiceId === "string" &&
+      typeof entry.label === "string"
+    );
+  }
+
+  function getSceneById(sceneId) {
+    return config.scenes.find((scene) => scene.id === sceneId) || null;
+  }
+
+  function getPersonalizedDialogue(scene) {
+    if (!scene || !scene.dialogue.length || !state.playerName || scene.npc.name === "Decision Room") {
+      return scene ? scene.dialogue : [];
+    }
+
+    return scene.dialogue.map((line, index) =>
+      index === 0 ? `Hi ${escapeHtml(state.playerName)}, ${line}` : line
+    );
+  }
+
+  function getStorage() {
+    try {
+      return window.localStorage;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function clearSavedGame() {
+    const storage = getStorage();
+    if (!storage) {
+      return;
+    }
+
+    storage.removeItem(STORAGE_KEY);
+  }
+
+  function setSaveButtonStatus(label) {
+    saveButton.textContent = label;
+    window.clearTimeout(saveStatusTimeoutId);
+    saveStatusTimeoutId = window.setTimeout(resetSaveButton, SAVE_STATUS_DURATION_MS);
+  }
+
+  function resetSaveButton() {
+    window.clearTimeout(saveStatusTimeoutId);
+    saveStatusTimeoutId = null;
+    saveButton.textContent = "Save";
   }
 
   function renderScoreBoard() {
@@ -251,19 +440,28 @@
   function renderInsightsPanel() {
     if (!state.insights.length) {
       insightsPanel.innerHTML =
-        '<div class="empty-state">No case notes yet. Stronger BA questions will unlock insights that stay visible for later decisions.</div>';
+        '<div class="empty-state">Your wall is still blank. Stronger BA questions will pin risks, root causes, and delivery clues here as the case unfolds.</div>';
       return;
     }
 
     insightsPanel.innerHTML = state.insights
-      .map(
-        (insight) => `
-          <article class="insight-card">
+      .map((insight, index) => {
+        const typeMeta = getInsightTypeMeta(insight.type);
+        return `
+          <article class="insight-card board-note" data-note-type="${typeMeta.key}" style="--delay: ${index * 60}ms">
+            <div class="board-note-top">
+              <span class="board-pin" aria-hidden="true"></span>
+              <span class="board-type">${typeMeta.label}</span>
+              <span class="board-source">${insight.source || "Team"}</span>
+            </div>
             <h3>${insight.title}</h3>
             <p>${insight.detail}</p>
+            <div class="board-note-footer">
+              <span>${insight.stageTitle || "Scenario signal"}</span>
+            </div>
           </article>
-        `
-      )
+        `;
+      })
       .join("");
   }
 
@@ -353,6 +551,23 @@
             <p class="eyebrow intro-eyebrow">Step into the BA chair</p>
             <h2>${config.scenarioTitle}</h2>
             <p class="hero-copy">${config.intro.summary}</p>
+            <div class="name-entry-card">
+              <label class="name-entry-label" for="playerNameInput">
+                <span>Enter your name</span>
+                <span class="name-entry-optional">Optional</span>
+              </label>
+              <div class="name-entry-row">
+                <p class="name-entry-help">If you add a name here, your stakeholders will greet you with your name.</p>
+                <input
+                  id="playerNameInput"
+                  class="name-entry-input"
+                  type="text"
+                  maxlength="30"
+                  placeholder=""
+                  value="${escapeHtml(state.playerName)}"
+                >
+              </div>
+            </div>
           </div>
           <div class="intro-visual">
             <figure class="hero-illustration">
@@ -376,7 +591,7 @@
           </article>
           <article class="summary-card intro-summary intro-summary-play">
             <h3>How to play</h3>
-            <p>Read the dialogue, choose one response per scene, review the immediate feedback, then continue. Your choices shift score signals and unlock case notes.</p>
+            <p>Read the chat, choose one response per scene, watch how the room reacts, then pin new evidence to the Case Board as you move toward the MVP call.</p>
           </article>
           <article class="summary-card intro-summary intro-summary-score">
             <h3>Learning lens</h3>
@@ -409,6 +624,32 @@
     const sceneIndex = config.scenes.findIndex((item) => item.id === scene.id) + 1;
     const stage = config.stages.find((item) => item.id === scene.stageId);
     const selectedChoice = scene.choices.find((choice) => choice.id === state.selectedChoiceId);
+    const reactionMeta = selectedChoice ? getReactionMeta(selectedChoice) : null;
+    const dialogueLines = getPersonalizedDialogue(scene);
+    const sceneIllustration = scene.npc.illustration
+      ? `
+          <figure class="scene-illustration">
+            <img
+              class="scene-character"
+              src="${scene.npc.illustration.src}"
+              alt="${scene.npc.illustration.alt}"
+            >
+          </figure>
+        `
+      : "";
+    const chatThread = dialogueLines
+      .map(
+        (line, index) => `
+          <article class="chat-message chat-message-npc" style="--delay: ${index * 90}ms">
+            <div class="chat-avatar" aria-hidden="true">${getInitials(scene.npc.name)}</div>
+            <div class="chat-bubble">
+              ${index === 0 ? `<span class="chat-speaker">${scene.npc.name}</span>` : ""}
+              <p>${line}</p>
+            </div>
+          </article>
+        `
+      )
+      .join("");
     const choiceButtons = scene.choices
       .map((choice, index) => {
         const disabled = Boolean(state.selectedChoiceId);
@@ -423,7 +664,6 @@
             <span class="choice-index">${String.fromCharCode(65 + index)}</span>
             <span class="choice-copy">
               <strong>${choice.label}</strong>
-              <span>${choice.detail}</span>
             </span>
           </button>
         `;
@@ -431,7 +671,7 @@
       .join("");
 
     screenRoot.innerHTML = `
-      <section class="scene-card">
+      <section class="scene-card chat-scene-card">
         <div class="scene-header">
           <div>
             <div class="scene-meta">
@@ -447,49 +687,71 @@
               </div>
             </div>
           </div>
+          ${sceneIllustration}
         </div>
 
-        <div class="scene-note">
+        <div class="mission-banner">
+          <span class="mission-label">Current mission</span>
           <strong>${scene.subtitle}</strong>
+          <p>${stage.focus}</p>
         </div>
 
-        <div class="scene-dialogue">
-          ${scene.dialogue.map((line) => `<p>${line}</p>`).join("")}
+        <div class="chat-thread">
+          ${chatThread}
+          ${
+            selectedChoice
+              ? `
+                <article class="chat-message chat-message-player">
+                  <div class="chat-bubble">
+                    <span class="chat-speaker">You</span>
+                    <p>${selectedChoice.label}</p>
+                  </div>
+                </article>
+                <article class="chat-message chat-message-reaction">
+                  <div class="chat-avatar chat-avatar-reaction" aria-hidden="true">${getInitials(scene.npc.name)}</div>
+                  <div class="chat-bubble reaction-bubble">
+                    <div class="reaction-topline">
+                      <span class="chat-speaker">${scene.npc.name} reacts</span>
+                      <span class="reaction-chip reaction-chip-${reactionMeta.tone}">${reactionMeta.label}</span>
+                    </div>
+                    <p>${state.lastFeedback}</p>
+                    <div class="impact-row">
+                      ${renderScoreImpactChips(selectedChoice.scoreEffects || {})}
+                    </div>
+                    ${
+                      selectedChoice.insight
+                        ? `
+                          <div class="feedback-insight case-unlock">
+                            <strong>Case Board updated</strong>
+                            <span>${selectedChoice.insight.title}: ${selectedChoice.insight.detail}</span>
+                          </div>
+                        `
+                        : ""
+                    }
+                    <button class="primary-button" data-action="continue">${
+                      scene.type === "recommendation" ? "See outcome" : "Continue"
+                    }</button>
+                  </div>
+                </article>
+              `
+              : `
+                <article class="chat-message chat-message-system">
+                  <div class="chat-bubble system-bubble">
+                    <span class="chat-speaker">Next BA move</span>
+                    <p>Pick the response you want to send into the room. Your choice will shift trust, clarity, and delivery risk.</p>
+                  </div>
+                </article>
+              `
+          }
         </div>
 
-        <div class="prompt-block">
+        <div class="prompt-block chat-prompt-block">
+          <span class="prompt-kicker">Your move</span>
           <strong>${scene.prompt}</strong>
-          <span class="intro-note">Choose the BA response that best balances learning, alignment, and delivery judgement.</span>
+          <span class="intro-note">Choose the response you want the BA to send into the conversation.</span>
         </div>
 
         <div class="choice-list">${choiceButtons}</div>
-
-        ${
-          selectedChoice
-            ? `
-              <aside class="feedback-panel" aria-live="polite">
-                <p class="eyebrow">Immediate feedback</p>
-                <h3>${state.lastFeedback}</h3>
-                <div class="impact-row">
-                  ${renderScoreImpactChips(selectedChoice.scoreEffects || {})}
-                </div>
-                ${
-                  selectedChoice.insight
-                    ? `
-                      <div class="feedback-insight">
-                        <strong>Insight unlocked</strong>
-                        <span>${selectedChoice.insight.title}: ${selectedChoice.insight.detail}</span>
-                      </div>
-                    `
-                    : ""
-                }
-                <button class="primary-button" data-action="continue">${
-                  scene.type === "recommendation" ? "See outcome" : "Continue"
-                }</button>
-              </aside>
-            `
-            : ""
-        }
       </section>
     `;
   }
@@ -572,6 +834,46 @@
       .join("");
   }
 
+  function getInsightTypeMeta(type) {
+    const insightTypes = {
+      "root-cause": { key: "root-cause", label: "Root cause" },
+      noise: { key: "noise", label: "Noise filter" },
+      "mvp-scope": { key: "mvp-scope", label: "MVP scope" },
+      "user-focus": { key: "user-focus", label: "User focus" },
+      risk: { key: "risk", label: "Risk" },
+      "user-pain": { key: "user-pain", label: "User pain" },
+      constraint: { key: "constraint", label: "Constraint" },
+      "logic-gap": { key: "logic-gap", label: "Logic gap" },
+      quality: { key: "quality", label: "Quality" },
+    };
+
+    return insightTypes[type] || { key: "finding", label: "Finding" };
+  }
+
+  function getReactionMeta(choice) {
+    const scoreEffects = choice.scoreEffects || {};
+    const positiveShift =
+      Math.max(scoreEffects.businessUnderstanding || 0, 0) +
+      Math.max(scoreEffects.teamTrust || 0, 0) +
+      Math.max(scoreEffects.deliveryReadiness || 0, 0) +
+      Math.max(-(scoreEffects.riskExposure || 0), 0);
+    const negativeShift =
+      Math.abs(Math.min(scoreEffects.businessUnderstanding || 0, 0)) +
+      Math.abs(Math.min(scoreEffects.teamTrust || 0, 0)) +
+      Math.abs(Math.min(scoreEffects.deliveryReadiness || 0, 0)) +
+      Math.max(scoreEffects.riskExposure || 0, 0);
+
+    if (positiveShift >= negativeShift + 4) {
+      return { tone: "positive", label: "Room opens up" };
+    }
+
+    if (negativeShift >= positiveShift + 4) {
+      return { tone: "warning", label: "Pushback rises" };
+    }
+
+    return { tone: "mixed", label: "More proof needed" };
+  }
+
   function getMetricStatus(metric, value) {
     if (metric === "riskExposure") {
       if (value <= 20) {
@@ -605,6 +907,19 @@
       .join("")
       .slice(0, 2)
       .toUpperCase();
+  }
+
+  function normalizePlayerName(value) {
+    return typeof value === "string" ? value.trim().replace(/\s+/g, " ").slice(0, 30) : "";
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   function clamp(value, min, max) {

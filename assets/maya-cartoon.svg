@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 300" role="img" aria-labelledby="title desc">
+  <title id="title">Maya cartoon portrait</title>
+  <desc id="desc">Cartoon illustration of Maya, Head of Complaints Operations, with long hair and a blue top.</desc>
+  <defs>
+    <linearGradient id="bg" x1="40" y1="28" x2="278" y2="262" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff6e2"/>
+      <stop offset="0.52" stop-color="#ffe4da"/>
+      <stop offset="1" stop-color="#e4f4f1"/>
+    </linearGradient>
+    <linearGradient id="top" x1="102" y1="150" x2="228" y2="252" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4d8dd6"/>
+      <stop offset="1" stop-color="#24589f"/>
+    </linearGradient>
+    <linearGradient id="card" x1="190" y1="176" x2="260" y2="236" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#264d73"/>
+      <stop offset="1" stop-color="#17344d"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M64 70c20-34 58-52 102-52 41 0 77 16 101 45 23 28 33 66 26 104-7 41-34 79-74 99-39 20-89 20-127-1-38-20-63-57-67-98-4-35 7-67 39-97z" fill="url(#bg)"/>
+
+  <circle cx="56" cy="92" r="13" fill="#46b6a5" opacity="0.28"/>
+  <circle cx="273" cy="74" r="10" fill="#ffd35f" opacity="0.42"/>
+  <circle cx="260" cy="233" r="15" fill="#ff9b7b" opacity="0.24"/>
+
+  <rect x="223" y="58" width="54" height="66" rx="16" fill="#ffffff" opacity="0.9"/>
+  <rect x="235" y="72" width="28" height="7" rx="3.5" fill="#14324b" opacity="0.16"/>
+  <path d="M236 93l8 8 14-16" fill="none" stroke="#46b6a5" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+
+  <rect x="46" y="62" width="68" height="52" rx="16" fill="#ffffff" opacity="0.9"/>
+  <rect x="58" y="76" width="42" height="7" rx="3.5" fill="#4d8dd6"/>
+  <rect x="58" y="89" width="30" height="7" rx="3.5" fill="#ffb54a"/>
+  <rect x="58" y="102" width="34" height="7" rx="3.5" fill="#14324b" opacity="0.16"/>
+
+  <path d="M112 151c14-17 34-26 56-26 24 0 47 10 63 28l13 65H96l16-67z" fill="url(#top)"/>
+  <path d="M142 152c8 8 17 12 27 12 12 0 23-4 33-13" fill="none" stroke="#d9e8ff" stroke-linecap="round" stroke-width="10"/>
+
+  <path d="M108 93c0-31 20-53 54-53 31 0 52 20 57 50-4 18-12 31-22 40h-73c-10-10-16-21-16-37z" fill="#17344d"/>
+  <path d="M111 98c4-22 22-42 51-42 32 0 47 22 50 44 0 32-20 56-50 56-31 0-51-25-51-58z" fill="#f1c5ab"/>
+
+  <path d="M119 83c5-22 24-37 47-37 30 0 48 18 52 47-7-6-20-10-39-10-20 0-37 4-52 15l-8-15z" fill="#17344d"/>
+  <path d="M117 92c3 19 11 33 18 46 6 11 8 23 7 35l-23-11c-9-14-14-31-14-47 0-8 4-16 12-23z" fill="#17344d"/>
+  <path d="M207 92c-3 19-11 33-18 46-6 11-8 23-7 35l23-11c9-14 14-31 14-47 0-8-4-16-12-23z" fill="#17344d"/>
+  <path d="M128 146c11 24 16 50 14 76h-20c-9-16-15-34-18-52 5-11 13-18 24-24z" fill="#17344d"/>
+  <path d="M201 146c-11 24-16 50-14 76h20c9-16 15-34 18-52-5-11-13-18-24-24z" fill="#17344d"/>
+
+  <circle cx="145" cy="110" r="4" fill="#14324b"/>
+  <circle cx="180" cy="110" r="4" fill="#14324b"/>
+  <path d="M149 126c8 7 17 7 25 0" fill="none" stroke="#c97461" stroke-linecap="round" stroke-width="4"/>
+
+  <path d="M105 169c-17 10-29 25-34 44l25 10 23-40-14-14z" fill="#f1c5ab"/>
+  <circle cx="89" cy="222" r="10" fill="#f1c5ab"/>
+
+  <path d="M217 170c16 7 28 17 36 30l-20 18-28-29 12-19z" fill="#f1c5ab"/>
+  <circle cx="253" cy="212" r="10" fill="#f1c5ab"/>
+
+  <rect x="188" y="177" width="72" height="56" rx="10" fill="url(#card)"/>
+  <rect x="196" y="185" width="56" height="39" rx="8" fill="#dcecf6"/>
+  <rect x="188" y="171" width="30" height="12" rx="6" fill="#ffd35f"/>
+  <path d="M208 202h32m-32 9h24" fill="none" stroke="#2c6287" stroke-linecap="round" stroke-width="5"/>
+
+  <rect x="74" y="239" width="178" height="22" rx="11" fill="#244a6b"/>
+  <rect x="92" y="231" width="142" height="16" rx="8" fill="#3d678f"/>
+
+  <path d="M243 36c11 0 20 9 20 20 0 5-2 9-5 13l5 12-12-8h-8c-11 0-20-9-20-20s9-20 20-20z" fill="#ffffff" opacity="0.95"/>
+  <path d="M240 55h6m7 0h6m-13-7v14" fill="none" stroke="#4d8dd6" stroke-linecap="round" stroke-width="4.5"/>
+</svg>

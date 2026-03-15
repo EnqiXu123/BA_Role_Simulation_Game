@@ -1099,3 +1099,66 @@ the concept is fun enough to engage users
 the scenario teaches real BA behaviours
 
 the product can be built and iterated quickly using vibe coding / Codex
+
+
+
+Business Rules
+
+The exact rule is: there is no hidden scoring formula per question. Each answer has a fixed score delta authored in the scenario data, and the app just applies it.
+
+The scoring model is defined in scenario.js and applied in app.js. The ending thresholds are in app.js.
+
+Core rules
+
+All four metrics start at 30.
+After each choice, the game adds or subtracts the exact scoreEffects values for that choice.
+If a metric is not listed in that choice’s scoreEffects, it changes by 0.
+Scores are clamped between 0 and 100.
+Business Understanding, Team Trust, and Delivery Readiness: higher is better.
+Risk Exposure: lower is better.
+Ending rules
+
+Strong outcome if:
+average of Business Understanding + Team Trust + Delivery Readiness is >= 68
+Business Understanding >= 65
+Delivery Readiness >= 60
+Risk Exposure <= 35
+IMPROVEMENT NEEDED if:
+positive average < 45, or
+Risk Exposure > 60
+Otherwise: Mixed outcome
+What each metric means
+
+Business Understanding: rewarded when you ask root-cause, outcome, user, and process questions.
+Team Trust: rewarded when you respect stakeholder concerns and collaborate across roles.
+Delivery Readiness: rewarded when you clarify rules, constraints, examples, and acceptance criteria.
+Risk Exposure: reduced when you surface dependencies, edge cases, and scope risks early; increased when you overpromise, skip clarification, or defer important logic.
+Exact per-scene score deltas
+BU = Business Understanding, TT = Team Trust, DR = Delivery Readiness, Risk = Risk Exposure
+
+Scene	Best-practice style choice	Delta
+Maya	Root cause / handoff breakdown	BU +10, TT +4, Risk -5
+Lena	Outcome before features	BU +8, TT +5, DR +2, Risk -3
+Chris	Fixed date + risky assumptions	BU +3, TT +6, DR +6, Risk -4
+Nia	Current journey walkthrough	BU +7, TT +4, DR +3, Risk -2
+Omar	Non-negotiable constraints + low-risk path	BU +5, TT +3, DR +8, Risk -4
+Ethan	Clarify ambiguous rules / edge cases	BU +4, TT +5, DR +9, Risk -3
+Priya	Acceptance criteria + examples	BU +5, TT +2, DR +10, Risk -4
+Final recommendation	Focused MVP	BU +7, TT +4, DR +7, Risk -5
+Scene	Weaker / risky choices	Delta
+Maya	Dashboard first	BU -4, DR +1, Risk +6
+Maya	Feature list first	BU +3, TT +2, Risk +2
+Lena	Lock full backlog	TT -3, DR +1, Risk +7
+Lena	Pick first user group	BU +6, TT +3, DR +3, Risk -1
+Chris	“Just move faster”	TT -5, Risk +8
+Chris	Defer risk discussion	BU -1, DR -2, Risk +6
+Nia	Visual polish first	BU -3, TT -2, Risk +4
+Nia	Reuse current form	DR +1, TT -1, Risk +3
+Omar	Automate everything now	TT -2, DR -3, Risk +8
+Omar	Ignore audit trail	BU -2, DR +1, Risk +7
+Ethan	Code from notes, clarify later	TT -2, DR -4, Risk +7
+Ethan	Happy path only	DR +1, Risk +4
+Priya	QA can infer behaviour	TT -3, DR -5, Risk +8
+Priya	Edge cases in phase two	DR -1, Risk +5
+Final recommendation	Big-bang transformation	BU -4, TT -1, DR -5, Risk +10
+Final recommendation	Thin tool / partial MVP	BU +3, TT +1, DR +1, Risk +2

@@ -669,7 +669,7 @@
     const stagePreview = config.stages
       .map(
         (stage, index) => `
-          <article class="stage-preview playful-stage-card" data-step="Stage ${index + 1}">
+          <article class="stage-preview playful-stage-card">
             <span class="stage-label">${stageLabels[index]}</span>
             <h3>${stage.title}</h3>
             <p>${stage.focus}</p>

@@ -1641,7 +1641,6 @@ select {
 
 .ending-trophy {
   width: min(100%, 188px);
-  margin: 0;
   justify-self: end;
   transform: rotate(2deg);
   animation: float-bob 3.6s ease-in-out infinite;

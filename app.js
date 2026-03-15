@@ -815,7 +815,7 @@
         <div class="scene-header">
           <div>
             <div class="scene-meta">
-              <span class="scene-chip">Stage ${config.stages.findIndex((item) => item.id === stage.id) + 1} - ${stage.title}</span>
+              <span class="scene-chip">${stage.title}</span>
               <span class="npc-tag">${scene.npc.role}</span>
               <span class="scene-count">Scene ${sceneIndex} of ${config.scenes.length}</span>
             </div>

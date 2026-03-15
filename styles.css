@@ -1177,7 +1177,6 @@ select {
 
 .scene-illustration {
   width: min(100%, 190px);
-  margin: 0 !important;
   padding: 10px;
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.7);

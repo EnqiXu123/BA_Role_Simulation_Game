@@ -622,7 +622,7 @@ window.GAME_CONFIG = {
         {
           id: "rec-thin-tool",
           label:
-            "Recommend a simple first release where analysts can manage complaint cases in one place, update early complaint decisions manually, and use basic reporting, while leaving more complex reopen and pause rules for a later release.",
+            "Recommend a simple first release where analysts can manage complaint cases in one place, update early complaint decisions manually, and use basic reporting, while leaving more complicated situations, such as complaints being reopened or deadline timers being paused, for a later release.",
           detail:
             "Closer to MVP thinking, but still leaves important complaint rules unresolved.",
           feedback:

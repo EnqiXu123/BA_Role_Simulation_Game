@@ -339,6 +339,7 @@
       insights: state.insights,
       scores: state.scores,
       choiceHistory: state.choiceHistory,
+      finalRecommendationId: state.finalRecommendation ? state.finalRecommendation.id : null,
       finalRecommendationLabel: state.finalRecommendation ? state.finalRecommendation.label : null,
     };
   }
@@ -374,6 +375,15 @@
       typeof savedState.selectedChoiceId === "string" && validChoiceIds.has(savedState.selectedChoiceId)
         ? savedState.selectedChoiceId
         : null;
+    const choiceHistory = Array.isArray(savedState.choiceHistory)
+      ? savedState.choiceHistory.filter(isChoiceHistoryShape).map((entry) => ({ ...entry }))
+      : [];
+    const finalRecommendation =
+      getRecommendationChoice(savedState.finalRecommendationId) ||
+      getRecommendationChoiceFromHistory(choiceHistory) ||
+      (typeof savedState.finalRecommendationLabel === "string"
+        ? { label: savedState.finalRecommendationLabel }
+        : null);
 
     return {
       ...baseState,
@@ -393,14 +403,30 @@
         ? savedState.insights.filter(isInsightShape).map((insight) => ({ ...insight }))
         : [],
       scores: sanitizeScores(savedState.scores),
-      choiceHistory: Array.isArray(savedState.choiceHistory)
-        ? savedState.choiceHistory.filter(isChoiceHistoryShape).map((entry) => ({ ...entry }))
-        : [],
-      finalRecommendation:
-        typeof savedState.finalRecommendationLabel === "string"
-          ? { label: savedState.finalRecommendationLabel }
-          : null,
+      choiceHistory,
+      finalRecommendation,
     };
+  }
+
+  function getRecommendationChoice(choiceId) {
+    if (typeof choiceId !== "string") {
+      return null;
+    }
+
+    const recommendationScene = getSceneById("recommendation");
+    if (!recommendationScene) {
+      return null;
+    }
+
+    return recommendationScene.choices.find((choice) => choice.id === choiceId) || null;
+  }
+
+  function getRecommendationChoiceFromHistory(choiceHistory) {
+    const recommendationEntry = [...choiceHistory]
+      .reverse()
+      .find((entry) => entry.sceneId === "recommendation");
+
+    return recommendationEntry ? getRecommendationChoice(recommendationEntry.choiceId) : null;
   }
 
   function sanitizeScores(scores) {
@@ -872,9 +898,14 @@
 
   function renderEnding() {
     const ending = state.ending;
-    const recommendationLabel = state.finalRecommendation
-      ? state.finalRecommendation.label
-      : "No final recommendation selected.";
+    const recommendationChoice =
+      getRecommendationChoice(state.finalRecommendation && state.finalRecommendation.id) ||
+      getRecommendationChoiceFromHistory(state.choiceHistory);
+    const recommendationLabel = recommendationChoice
+      ? recommendationChoice.label
+      : state.finalRecommendation
+        ? state.finalRecommendation.label
+        : "No final recommendation selected.";
     const highlightRiskExposureAlert =
       (ending.key === "mixedOutcome" || ending.key === "poorOutcome") &&
       state.scores.riskExposure > 40;
@@ -1003,6 +1034,21 @@
         trophy: `
           <figure class="ending-trophy" aria-hidden="true">
             <img src="assets/ba-trophy.svg" alt="">
+          </figure>
+        `,
+      };
+    }
+
+    if (endingKey === "mixedOutcome") {
+      return {
+        message: `<p class="ending-congrats">${
+          safeName
+            ? `Congrats ${safeName}, you have won a Silver BA Trophy for your hard work!`
+            : "Congrats, you have won a Silver BA Trophy for your hard work!"
+        }</p>`,
+        trophy: `
+          <figure class="ending-trophy" aria-hidden="true">
+            <img src="assets/ba-trophy-silver.svg" alt="">
           </figure>
         `,
       };

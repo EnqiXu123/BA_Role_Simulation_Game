@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-labelledby="title desc">
+  <title id="title">Silver BA trophy</title>
+  <desc id="desc">Silver BA trophy for a simulation outcome.</desc>
+  <defs>
+    <linearGradient id="cup" x1="48" y1="28" x2="128" y2="136" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f7fafc"/>
+      <stop offset="0.48" stop-color="#cfd7df"/>
+      <stop offset="1" stop-color="#8f99a5"/>
+    </linearGradient>
+    <linearGradient id="base" x1="70" y1="128" x2="112" y2="164" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5b6675"/>
+      <stop offset="1" stop-color="#2f3947"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="90" cy="90" r="84" fill="#f6f9fc"/>
+  <circle cx="90" cy="90" r="72" fill="#e6ebf0" opacity="0.72"/>
+
+  <path d="M57 42h66v13c0 24-11 43-33 55-22-12-33-31-33-55V42z" fill="url(#cup)" stroke="#7f8996" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M57 50H36c0 18 7 31 22 39" fill="none" stroke="#9ca6b2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M123 50h21c0 18-7 31-22 39" fill="none" stroke="#9ca6b2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M74 109h32v18H74z" fill="#a2adb9"/>
+  <path d="M66 128h48v14H66z" fill="url(#base)" rx="7"/>
+  <path d="M58 142h64v16H58z" fill="url(#base)" rx="8"/>
+
+  <circle cx="90" cy="70" r="20" fill="#f5f7fa" opacity="0.82"/>
+  <g transform="matrix(0.78 0 0 0.78 11 10)">
+    <path d="M79 61h9c7 0 11 3 11 8 0 3-2 6-5 7 4 1 6 4 6 8 0 6-4 9-12 9h-9V61zm8 12h2c3 0 4-1 4-3s-1-3-4-3h-2v6zm0 14h3c3 0 5-1 5-4 0-2-2-4-5-4h-3v8z" fill="#52606e"/>
+  </g>
+  <g transform="matrix(0.78 0 0 0.78 19 10)">
+    <path d="M104 93l-2-8H94l-2 8h-7l9-32h8l10 32h-8zm-8-14h5l-1-5c-1-3-1-6-2-8-1 2-1 5-2 8l-1 5z" fill="#52606e"/>
+  </g>
+
+  <path d="M50 34l10 4-7 7" fill="#c6ced7"/>
+  <path d="M132 34l-10 4 7 7" fill="#c6ced7"/>
+</svg>

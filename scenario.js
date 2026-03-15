@@ -172,9 +172,9 @@ window.GAME_CONFIG = {
           insight: {
             id: "outcome-over-features",
             type: "mvp-scope",
-            title: "Outcome over feature count",
+            title: "Fewer features, clearer value",
             detail:
-              "The Product Owner will trade breadth for a release that clearly reduces missed SLA breaches.",
+              "The Product Owner is happy to launch fewer features first if that release helps the team miss fewer complaint deadlines.",
           },
         },
         {
@@ -252,9 +252,9 @@ window.GAME_CONFIG = {
           insight: {
             id: "dependency-window",
             type: "risk",
-            title: "Dependency window",
+            title: "Outside team dependency",
             detail:
-              "The quarter-end steering date is fixed, but anything tied to the customer data service is a schedule risk.",
+              "The deadline for showing progress to leadership will not move, but any work that relies on another team updating customer information could delay the release.",
           },
         },
         {
@@ -323,9 +323,9 @@ window.GAME_CONFIG = {
           insight: {
             id: "context-loss",
             type: "user-pain",
-            title: "Context loss in triage",
+            title: "Context loss during early complaint handling",
             detail:
-              "Users lose context when complaint notes, ownership, and SLA dates sit in different places during triage.",
+              "Users lose track of what is happening when complaint notes, ownership details, and deadline dates are spread across different systems at the start of the complaint process.",
           },
         },
         {
@@ -457,7 +457,7 @@ window.GAME_CONFIG = {
           detail:
             "Turn vague concern into explicit build questions.",
           feedback:
-            "This is exactly what the team needs from a BA. You surface implementation blockers before they become churn during build.",
+            "This is exactly what the team needs from a BA. You surface implementation blockers before they turn into confusion and rework during build.",
           scoreEffects: {
             businessUnderstanding: 4,
             teamTrust: 5,
@@ -475,7 +475,7 @@ window.GAME_CONFIG = {
         {
           id: "dev-code-now",
           label:
-            "Ask engineering to start coding from meeting notes and clarify details during UAT.",
+            "Ask engineering to start coding from meeting notes and clarify details during UAT (User Acceptance Testing).",
           detail:
             "Move quickly now and accept avoidable churn later.",
           feedback:
@@ -564,7 +564,7 @@ window.GAME_CONFIG = {
           detail:
             "That may sound like MVP discipline, but it can cut core quality expectations.",
           feedback:
-            "You reduced immediate scope, but the delayed scenarios still shape whether the first release is genuinely workable.",
+            "You reduced the amount of work for now, but those postponed cases still affect whether the first release will work properly in real complaint handling.",
           scoreEffects: {
             deliveryReadiness: -1,
             riskExposure: 5,
@@ -622,7 +622,7 @@ window.GAME_CONFIG = {
         {
           id: "rec-thin-tool",
           label:
-            "Recommend a slim analyst workspace with manual triage support and basic reporting, but defer complex reopen and pause logic to a follow-up release.",
+            "Recommend a simple first release where analysts can manage complaint cases in one place, update early complaint decisions manually, and use basic reporting, while leaving more complex reopen and pause rules for a later release.",
           detail:
             "Closer to MVP thinking, but still leaves important complaint rules unresolved.",
           feedback:

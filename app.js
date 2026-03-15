@@ -263,7 +263,7 @@
       }
 
       if (weakestMetric === "teamTrust") {
-        return "You already moved the team well. Next run, strengthen trust further by summarising stakeholder concerns back to them and showing exactly how their input changes the MVP cut.";
+        return "You already moved the team well. Next run, strengthen trust further by summarising stakeholder concerns back to them and showing clearly how their input affects what is included in the first release.";
       }
 
       return "You created a strong release shape. Next run, go one step further by turning more edge cases and acceptance examples into explicit build-ready detail before delivery starts.";
